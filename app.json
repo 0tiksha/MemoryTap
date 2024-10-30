@@ -1,0 +1,17 @@
+{
+  "expo": {
+    "name": "MemoryTap",
+    "slug": "MemoryTap",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "myapp",
+    "userInterfaceStyle": "automatic",
+    "entryPoint": "./app/index.js",
+    "plugins": [
+      "expo-router"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
