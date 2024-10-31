@@ -1,6 +1,11 @@
 import { StyleSheet, Text, View } from "react-native"
 import {sWidth} from "../Constants/Metrics"
 
+interface headerProps = {
+    headingTxt: String,
+    
+} 
+
 export const HeaderA = ({headingTxt})=>{
     return(
         <View style={styles.container}>
