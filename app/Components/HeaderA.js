@@ -6,21 +6,21 @@ interface headerProps = {
     
 } 
 
-export const HeaderA = ({headingTxt})=>{
-    return(
+export const HeaderA = ({ headingTxt }) => {
+    return (
         <View style={styles.container}>
             <Text style={styles.heading}>
-{headingTxt}
+                {headingTxt}
             </Text>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-container:{
-width:sWidth
-},
-heading:{
+    container: {
+        width: sWidth
+    },
+    heading: {
 
-}
+    }
 })
