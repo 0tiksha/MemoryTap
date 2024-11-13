@@ -8,7 +8,8 @@ export type LogType = BaseEntity & {
   LogID: number;
   CounterID?: number;
   DateTimeStamp: Date;
-  CurrentValue: number;
+  NewValue: number;
+  PreviousValue: number;
   OperationType?: OperationType;
 };
 
