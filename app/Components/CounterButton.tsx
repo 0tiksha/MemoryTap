@@ -1,6 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Text, TouchableOpacity } from "react-native";
-import { styles } from "../indexStyle";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
 type Props = {
   onClick: () => void;
@@ -21,3 +20,10 @@ export default function CounterButton({ onClick, label }: Props) {
     </TouchableOpacity>
   );
 }
+
+const styles = StyleSheet.create({
+  button: {
+    alignItems: "center",
+    backgroundColor: "red",
+  },
+});

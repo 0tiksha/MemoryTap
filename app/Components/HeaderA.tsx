@@ -1,12 +1,12 @@
 import { StyleSheet, Text, View } from "react-native"
 import {sWidth} from "../Constants/Metrics"
 
-interface headerProps = {
+interface headerProps {
     headingTxt: String,
     
 } 
 
-export const HeaderA = ({ headingTxt }) => {
+export const HeaderA = ({headingTxt}:headerProps) => {
     return (
         <View style={styles.container}>
             <Text style={styles.heading}>

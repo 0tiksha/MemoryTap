@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
-    "entryPoint": "./app/index.js",
+    "entryPoint": "./app/App",
     "plugins": [
       "expo-router"
     ],
