@@ -1,63 +1,53 @@
+import { Button, Input, Text } from "@rneui/base";
+import { useNavigation } from "expo-router";
 import React, { useState } from "react";
 import { View } from "react-native";
 import { apiBaseUrl } from "../utilities/keys";
 import { storeToken } from "../utilities/storage/storage";
-import { useNavigation } from "@react-navigation/native";
-import { Button, Input, Text } from "@rneui/themed";
 import { styles } from "./styles";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../RootStackParamList";
 
-type Props = NativeStackScreenProps<RootStackParamList, "Login">;
-
-const LoginScreen = ({ route }: Props) => {
+export default function RegisterScreen() {
   const [userEmail, setUserEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [rePassword, setRePassword] = useState<string>("");
+  const [userName, setUserName] = useState<string>("");
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const navigation = useNavigation<any>();
 
   async function onSubmit() {
-    if (!password || !userEmail) {
-      alert("Password and email cannot be empty");
+    if (!password || !userEmail || !userName) {
+      alert("Please enter all fields");
       return;
     }
 
     setIsLoading(true);
     try {
-      const res = await fetch(`${apiBaseUrl}/Auth/Login`, {
+      const res = await fetch(`${apiBaseUrl}/Auth/Register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email: userEmail, password }),
+        body: JSON.stringify({ userEmail, password, userName }),
       }).then((res) => res.json());
       alert(res.message);
 
-      // set the token to the index component state
-      // route.params.setToken(res.token);
-
-      // set the token to the localStorage
-      await storeToken(res.token);
-
       setIsLoading(false);
 
-      // redirect to Home screen
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "Home" }],
-      });
+      // redirect to Login screen
+      navigation.navigate("Login");
     } catch (error) {
       if (error instanceof ReferenceError)
-        alert("Login Failed: " + error.message);
+        alert("Registration Failed: " + error.message);
+      else alert("Registration Failed");
 
       setIsLoading(false);
     }
   }
 
   function onClick() {
-    navigation.navigate("Register");
+    navigation.navigate("Login");
   }
 
   return (
@@ -69,29 +59,39 @@ const LoginScreen = ({ route }: Props) => {
       </View>
       <View style={styles.inputGroup}>
         <Input
-          style={styles.input}
+          placeholder="Enter your Username"
+          value={userName}
+          onChangeText={(e) => setUserName(e)}
+        ></Input>
+      </View>
+      <View style={styles.inputGroup}>
+        <Input
           placeholder="Enter your email"
           value={userEmail}
           onChangeText={(e) => setUserEmail(e)}
         ></Input>
       </View>
-
       <View style={styles.inputGroup}>
         <Input
-          style={styles.input}
           placeholder="Enter your password"
           secureTextEntry={true}
           value={password}
           onChangeText={(e) => setPassword(e)}
         ></Input>
       </View>
+      <View style={styles.inputGroup}>
+        <Input
+          placeholder="Re-enter your password"
+          secureTextEntry={true}
+          value={rePassword}
+          onChangeText={(e) => setRePassword(e)}
+        ></Input>
+      </View>
 
       <View style={styles.buttonGroup}>
-        <Button onPress={onSubmit} title="Login" loading={isLoading} />
-        <Text onPress={onClick}>Create new Account!</Text>
+        <Button onPress={onSubmit} title="Register" loading={isLoading} />
+        <Text onPress={onClick}>Already Have an account? Login!</Text>
       </View>
     </View>
   );
-};
-
-export default LoginScreen;
+}
