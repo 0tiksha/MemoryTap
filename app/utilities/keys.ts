@@ -1,15 +1,15 @@
 /**
  * Key used for storing data to local
  */
-export const storageKey = "MemoryTabKey";
+export const storageKey: string = "MemoryTabKey";
 
 /**
  * Base URL of Server
  */
 // export const apiBaseUrl = "http://localhost:3000/api";
-export const apiBaseUrl = "https://memorytapbackend.onrender.com/api";
+export const apiBaseUrl: string = "https://memorytapbackend.onrender.com/api";
 
 /**
  * Key used for storing token to local
  */
-export const tokenStorageKey = "MemoryTapAuthKey";
+export const tokenStorageKey: string = "MemoryTapAuthKey";

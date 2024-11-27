@@ -3,7 +3,7 @@ import { useNavigation } from "expo-router";
 import React, { useState } from "react";
 import { View } from "react-native";
 import { apiBaseUrl } from "../utilities/keys";
-import { storeToken } from "../utilities/storage/storage";
+import { storeToken } from "../services/tokenService";
 import { styles } from "./styles";
 
 export default function RegisterScreen() {

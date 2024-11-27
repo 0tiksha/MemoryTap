@@ -1,10 +1,11 @@
 import React, { useLayoutEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { HeaderA } from "../Components";
 import CounterButton from "../Components/CounterButton";
 import { styles } from "../indexStyle";
 import { OfflineLogType } from "../models/LogType";
-import { getData, storeData } from "../utilities/storage/storage";
+import { getLogs, storeLogs } from "../services/logsService";
+import { Text } from "@rneui/themed";
 
 export default function Counter() {
   const [count, setCounter] = useState<number>(0);
@@ -12,7 +13,7 @@ export default function Counter() {
 
   // gets the data from the storage
   useLayoutEffect(() => {
-    getData().then((storedData) => {
+    getLogs().then((storedData) => {
       if (storedData != null) {
         setData(storedData[storedData.length - 1]);
 
@@ -29,8 +30,8 @@ export default function Counter() {
   }, []);
 
   /**
-   * When the buttons are clicked
-   * @param operation -> add or subtract
+   * @summary Adds a new log to the local storage when a button is clicked.
+   * @param operation add or subtract
    */
   const onClick = async (operation: "add" | "subtract") => {
     let newLog: OfflineLogType = {
@@ -41,8 +42,8 @@ export default function Counter() {
     };
 
     // Store the data to storage
-    let oldStoredData = await getData();
-    storeData({ data: oldStoredData ? [...oldStoredData, newLog] : [newLog] });
+    let oldStoredData = await getLogs();
+    await storeLogs(oldStoredData ? [...oldStoredData, newLog] : [newLog]);
 
     // Update the counter
     if (operation == "add") setCounter((prev) => prev + 1);
@@ -51,7 +52,7 @@ export default function Counter() {
 
   return (
     <View style={styles.container}>
-      <HeaderA headingTxt="Counter" />
+      <HeaderA headingText="Counters" />
 
       <View style={styles.btnContainer}>
         <CounterButton label="add" onClick={() => onClick("add")} />

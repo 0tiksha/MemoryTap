@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Text, TouchableOpacity } from "react-native";
 import { styles } from "../indexStyle";
+import React from "react";
 
 type Props = {
   onClick: () => void;

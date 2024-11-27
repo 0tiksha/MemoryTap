@@ -1,5 +1,3 @@
-import { HeaderA } from "./HeaderA";
+import HeaderA from "./HeaderA";
 
-export {
-    HeaderA,
-}
+export { HeaderA };

@@ -1,31 +1,13 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { storageKey, tokenStorageKey } from "../keys";
-
-/**
- * Sets the token to local
- * @async
- * @param token String
- */
-export const storeToken = async (token: string) => {
-  await storeData({ data: token, key: tokenStorageKey });
-};
-
-/**
- * @async
- * @returns Token
- */
-export const getTokenFromStorage = async () => {
-  return await getData(tokenStorageKey);
-};
 
 type Props = {
   data: any;
   key: string;
 };
-
 /**
  * To store the data to the storage using AsyncStorage lib.
  * @param data -> object to save
+ * @param key -> key to store the data with
  */
 export const storeData = async ({ data, key }: Props) => {
   try {
@@ -39,13 +21,14 @@ export const storeData = async ({ data, key }: Props) => {
 /**
  *
  * @param key string
- * @returns Data from localstorage as for the key provided
+ * @returns Data from localstorage as for the key provided or null.
  */
 export const getData = async (key: string) => {
   try {
-    const data = await AsyncStorage.getItem(storageKey);
+    const data = await AsyncStorage.getItem(key);
     return data != null ? JSON.parse(data) : null;
   } catch (error) {
     console.error(error);
+    return null;
   }
 };
