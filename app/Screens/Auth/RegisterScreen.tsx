@@ -1,9 +1,8 @@
-import { Button, Input, Text } from "@rneui/base";
+import { apiBaseUrl } from "@/app/utilities/api/url";
+import { Input, Text, Button } from "@rneui/base";
 import { useNavigation } from "expo-router";
 import React, { useState } from "react";
 import { View } from "react-native";
-import { apiBaseUrl } from "../utilities/keys";
-import { storeToken } from "../services/tokenService";
 import { styles } from "./styles";
 
 export default function RegisterScreen() {

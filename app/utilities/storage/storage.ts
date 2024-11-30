@@ -32,3 +32,19 @@ export const getData = async (key: string) => {
     return null;
   }
 };
+
+/**
+ *
+ * @param key string
+ */
+export const clearData = async (key: string) => {
+  await AsyncStorage.removeItem(key);
+};
+
+/**
+ * Clears the entire storage
+ * @returns Promise
+ */
+export const clearStorage = async () => {
+  return await AsyncStorage.clear();
+};

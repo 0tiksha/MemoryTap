@@ -1,19 +1,18 @@
 import React, { useState } from "react";
 import { View } from "react-native";
-import { apiBaseUrl } from "../utilities/keys";
-import { storeToken } from "../services/tokenService";
 import { useNavigation } from "@react-navigation/native";
 import { Button, Input, Text } from "@rneui/themed";
-import { styles } from "./styles";
+import { RootStackParamList } from "@/app/RootStackParamList";
+import { storeToken } from "@/app/services/tokenService";
+import { apiBaseUrl } from "@/app/utilities/api/url";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../RootStackParamList";
+import { styles } from "./styles";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Login">;
 
 const LoginScreen = ({ route }: Props) => {
   const [userEmail, setUserEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const navigation = useNavigation<any>();
@@ -32,14 +31,19 @@ const LoginScreen = ({ route }: Props) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email: userEmail, password }),
-      }).then((res) => res.json());
-      alert(res.message);
+      });
+
+      const json = await res.json();
+
+      if (!res.ok) {
+        throw new Error(json.message);
+      }
 
       // set the token to the index component state
       // route.params.setToken(res.token);
 
       // set the token to the localStorage
-      await storeToken(res.token);
+      await storeToken(json.data.token);
 
       setIsLoading(false);
 
@@ -51,7 +55,7 @@ const LoginScreen = ({ route }: Props) => {
     } catch (error) {
       if (error instanceof ReferenceError)
         alert("Login Failed: " + error.message);
-
+    } finally {
       setIsLoading(false);
     }
   }

@@ -1,5 +1,5 @@
-import { OfflineLogType } from "../models/LogType";
-import { storageKey } from "../utilities/keys";
+import { OfflineLogType } from "../models/";
+import { storageKey } from "../utilities/storage/keys";
 import { getData, storeData } from "../utilities/storage/storage";
 
 /**

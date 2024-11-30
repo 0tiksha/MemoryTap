@@ -1,18 +1,18 @@
-import React, { useLayoutEffect, useState } from "react";
-import { View } from "react-native";
-import { HeaderA } from "../Components";
-import CounterButton from "../Components/CounterButton";
-import { styles } from "../indexStyle";
-import { OfflineLogType } from "../models/LogType";
-import { getLogs, storeLogs } from "../services/logsService";
+import CounterButton from "@/app/Components/CounterButton";
+import HeaderA from "@/app/Components/HeaderA";
+import { styles } from "@/app/indexStyle";
+import { OfflineLogType } from "@/app/models";
+import { getLogs, storeLogs } from "@/app/services/logsService";
 import { Text } from "@rneui/themed";
+import React, { useEffect, useState } from "react";
+import { View } from "react-native";
 
 export default function Counter() {
   const [count, setCounter] = useState<number>(0);
   const [data, setData] = useState<OfflineLogType | null>();
 
   // gets the data from the storage
-  useLayoutEffect(() => {
+  useEffect(() => {
     getLogs().then((storedData) => {
       if (storedData != null) {
         setData(storedData[storedData.length - 1]);
@@ -25,7 +25,6 @@ export default function Counter() {
       } else {
         setData(null);
       }
-      console.log(data);
     });
   }, []);
 

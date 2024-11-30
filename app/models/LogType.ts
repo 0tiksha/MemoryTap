@@ -1,10 +1,9 @@
-import { BaseEntity, OperationType } from "./index";
+import { OperationType } from "./index";
 
 /**
  * The Log that is made each time the user clicks a button
- * @extends BaseEntity
  */
-export type LogType = BaseEntity & {
+type LogType = {
   LogID: number;
   CounterID?: number;
   DateTimeStamp: Date;
@@ -13,12 +12,4 @@ export type LogType = BaseEntity & {
   OperationType?: OperationType;
 };
 
-/**
- * For Offline mode only
- */
-export type OfflineLogType = {
-  LogCount: number;
-  DateTimeStamp: Date;
-  CurrentValue: number;
-  OperationType: "add" | "subtract";
-};
+export default LogType;
