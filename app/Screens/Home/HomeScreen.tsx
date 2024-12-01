@@ -1,24 +1,25 @@
-import { createNewCounter } from "@/app/services/counterService";
-import { clearStorage } from "@/app/utilities/storage/storage";
+import LoadingComponent from "@/app/Components/LoadingComponent";
+import WelcomeComponent from "@/app/Components/WelcomeComponent/WelcomeComponent";
+import createAlert from "@/app/utilities/alerts/alert";
+import useCheckToken from "@/app/utilities/hooks/useCheckToken";
+import useLogout from "@/app/utilities/hooks/useLogout";
 import {
   createDrawerNavigator,
   DrawerContentComponentProps,
   DrawerContentScrollView,
   DrawerItemList,
 } from "@react-navigation/drawer";
-import { Button, Dialog, Icon, Input, Text } from "@rneui/themed";
+import { Text } from "@rneui/themed";
 import { useNavigation } from "expo-router";
-import React, { useState } from "react";
+import React from "react";
 import { Alert, TouchableOpacity, View } from "react-native";
-import styles from "./styles";
-import Counter from "../Counter/CounterScreen";
 import CountersScreen from "../Counter/CountersScreen";
 
 const Drawer = createDrawerNavigator();
 
 type Props = {
   props: DrawerContentComponentProps;
-  logout: () => Promise<void>;
+  logout: () => void;
 };
 
 function CustomDrawerContent(customProps: Props) {
@@ -32,7 +33,7 @@ function CustomDrawerContent(customProps: Props) {
           text: "Confirm",
           onPress: async () => {
             customProps.props.navigation.closeDrawer();
-            await customProps.logout();
+            customProps.logout();
           },
         },
       ],
@@ -53,17 +54,14 @@ function CustomDrawerContent(customProps: Props) {
 }
 
 const HomeScreen = () => {
-  const navigation = useNavigation<any>();
+  const [token, loading, error] = useCheckToken();
 
-  async function logout() {
-    // Clear token from storage
-    await clearStorage();
+  function logout() {
+    useLogout();
+  }
 
-    // navigate to login screen
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "Login" }],
-    });
+  if (loading) {
+    return <LoadingComponent />;
   }
 
   return (
@@ -87,66 +85,3 @@ const HomeScreen = () => {
 };
 
 export default HomeScreen;
-
-function WelcomeComponent() {
-  const [isCreateModalVisible, setIsCreateModalVisible] =
-    useState<boolean>(false);
-
-  const [counterName, setCounterName] = useState<string>("");
-
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  function onCreatePress() {
-    setIsCreateModalVisible((prev) => !prev);
-  }
-  async function onCheckPress() {
-    setIsLoading((prev) => !prev);
-
-    // API call
-    const res = await createNewCounter(counterName);
-
-    if (res.isError) {
-      Alert.alert("Error", res.error, [], {
-        cancelable: true,
-        userInterfaceStyle: "dark",
-      });
-    } else {
-      Alert.alert("Success", res.message, [], {
-        cancelable: true,
-        userInterfaceStyle: "light",
-      });
-    }
-
-    setTimeout(() => {
-      setIsLoading((prev) => !prev);
-      setIsCreateModalVisible((prev) => !prev);
-    }, 2000);
-  }
-  return (
-    <View style={styles.container}>
-      <Text h3 style={styles.heading}>
-        Welcome to Memory Tap!
-      </Text>
-      <View>
-        <Button
-          title="Create new Counter!"
-          color="secondary"
-          style={styles.createBtn}
-          onPress={onCreatePress}
-        ></Button>
-      </View>
-      <Dialog isVisible={isCreateModalVisible}>
-        <Dialog.Title title="Please enter the name for counter" />
-        <View>
-          <Input value={counterName} onChangeText={(e) => setCounterName(e)} />
-          <Button
-            color="success"
-            icon={<Icon name="check" />}
-            onPress={onCheckPress}
-            loading={isLoading}
-          />
-        </View>
-      </Dialog>
-    </View>
-  );
-}

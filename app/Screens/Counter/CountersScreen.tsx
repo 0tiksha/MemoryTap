@@ -2,9 +2,10 @@ import LoadingComponent from "@/app/Components/LoadingComponent";
 import { getCounterForUsers } from "@/app/services/counterService";
 import ICounter from "@/app/types/interfaces/ICounter";
 import { ListItem, Text } from "@rneui/themed";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Alert, View } from "react-native";
 import styles from "./styles";
+import { useNavigation } from "expo-router";
 
 const CountersScreen = () => {
   const [counters, setCounters] = useState<ICounter[]>();
@@ -27,6 +28,13 @@ const CountersScreen = () => {
       .finally(() => setIsLoading((prev) => !prev));
   }, []);
 
+  const navigation = useNavigation<any>();
+  const redirect = useCallback((counterID: string) => {
+    navigation.navigate("Counter", {
+      counterID,
+    });
+  }, []);
+
   if (isLoading) {
     return <LoadingComponent />;
   }
@@ -36,12 +44,18 @@ const CountersScreen = () => {
       <Text h2 style={styles.heading}>
         Your Counters
       </Text>
-      <View>
+      <Text style={styles.heading}>Tap on a counter to open it.</Text>
+      <View style={styles.listContainer}>
         {counters?.map((counter, index) => (
-          <ListItem key={index} bottomDivider>
+          <ListItem
+            key={index}
+            bottomDivider
+            onPress={() => redirect(counter._id)}
+          >
             <ListItem.Content>
               <ListItem.Title>{counter.counterName}</ListItem.Title>
             </ListItem.Content>
+            <ListItem.Chevron />
           </ListItem>
         ))}
       </View>
