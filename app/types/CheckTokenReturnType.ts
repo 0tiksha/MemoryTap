@@ -1,5 +1,5 @@
-export type CheckTokenReturnType = [
-  string | null | undefined,
-  boolean,
-  string | null | undefined
-];
+export type CheckTokenReturnType = {
+  token: string | null | undefined;
+  loading: boolean;
+  error: string | null | undefined;
+};

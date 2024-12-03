@@ -1,7 +1,4 @@
-import LoadingComponent from "@/app/Components/LoadingComponent";
 import WelcomeComponent from "@/app/Components/WelcomeComponent/WelcomeComponent";
-import createAlert from "@/app/utilities/alerts/alert";
-import useCheckToken from "@/app/utilities/hooks/useCheckToken";
 import useLogout from "@/app/utilities/hooks/useLogout";
 import {
   createDrawerNavigator,
@@ -10,7 +7,6 @@ import {
   DrawerItemList,
 } from "@react-navigation/drawer";
 import { Text } from "@rneui/themed";
-import { useNavigation } from "expo-router";
 import React from "react";
 import { Alert, TouchableOpacity, View } from "react-native";
 import CountersScreen from "../Counter/CountersScreen";
@@ -54,14 +50,13 @@ function CustomDrawerContent(customProps: Props) {
 }
 
 const HomeScreen = () => {
-  const [token, loading, error] = useCheckToken();
-
   function logout() {
-    useLogout();
-  }
-
-  if (loading) {
-    return <LoadingComponent />;
+    const error = useLogout();
+    if (error) {
+      Alert.alert("Error", error, [{ text: "Ok", style: "cancel" }], {
+        cancelable: true,
+      });
+    }
   }
 
   return (

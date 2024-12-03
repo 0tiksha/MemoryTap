@@ -1,42 +1,33 @@
-import "./Components/gesture-handler.native";
 import {
   NavigationContainer,
   NavigationIndependentTree,
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { Alert } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import "./Components/gesture-handler.native";
+import LoadingComponent from "./Components/LoadingComponent";
 import { RootStackParamList } from "./RootStackParamList";
-import { getTokenFromStorage } from "./services/tokenService";
-import HomeScreen from "./Screens/Home/HomeScreen";
 import LoginScreen from "./Screens/Auth/LoginScreen";
 import RegisterScreen from "./Screens/Auth/RegisterScreen";
-import LoadingComponent from "./Components/LoadingComponent";
+import HomeScreen from "./Screens/Home/HomeScreen";
+import useGetToken from "./utilities/hooks/useCheckToken";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
-  const [token, setToken] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    const fetchToken = async () => {
-      try {
-        let data = await getTokenFromStorage();
-        setToken(data);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchToken();
-  }, []);
+  const { token, loading, error } = useGetToken();
 
   // While to operation of fetching token is undegoing show loading screen
   if (loading) {
     return <LoadingComponent />;
+  }
+
+  if (error) {
+    Alert.alert("Error", error, [{ text: "Ok", style: "cancel" }], {
+      cancelable: true,
+    });
   }
 
   return (

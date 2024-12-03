@@ -6,10 +6,26 @@ import { getLogs, storeLogs } from "@/app/services/logsService";
 import { Text } from "@rneui/themed";
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
+import { RouteProp } from "@react-navigation/native";
+import { CountersScreensParamList } from "./CountersScreensParamList";
+import { useNavigation } from "expo-router";
 
-export default function Counter() {
+type CounterScreenProps = {
+  route: RouteProp<CountersScreensParamList, "Counter">;
+};
+
+const Counter: React.FC<CounterScreenProps> = ({ route }) => {
   const [count, setCounter] = useState<number>(0);
   const [data, setData] = useState<OfflineLogType | null>();
+
+  const navigation = useNavigation();
+
+  // set the title name
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitle: route.params.counterName,
+    });
+  }, []);
 
   // gets the data from the storage
   useEffect(() => {
@@ -65,4 +81,6 @@ export default function Counter() {
       </View>
     </View>
   );
-}
+};
+
+export default Counter;

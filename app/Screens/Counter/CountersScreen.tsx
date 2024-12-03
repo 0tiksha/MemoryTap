@@ -1,13 +1,49 @@
 import LoadingComponent from "@/app/Components/LoadingComponent";
 import { getCounterForUsers } from "@/app/services/counterService";
 import ICounter from "@/app/types/interfaces/ICounter";
+import {
+  NavigationContainer,
+  NavigationIndependentTree,
+} from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { ListItem, Text } from "@rneui/themed";
+import { useNavigation } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { Alert, View } from "react-native";
+import { CountersScreensParamList } from "./CountersScreensParamList";
 import styles from "./styles";
-import { useNavigation } from "expo-router";
+import Counter from "./CounterScreen";
+
+const Stack = createNativeStackNavigator<CountersScreensParamList>();
 
 const CountersScreen = () => {
+  return (
+    <NavigationIndependentTree>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Counters"
+            component={CounterListComponent}
+            options={{
+              headerShown: false,
+            }}
+          ></Stack.Screen>
+          <Stack.Screen
+            name="Counter"
+            component={Counter}
+            options={{
+              headerShown: true,
+            }}
+          ></Stack.Screen>
+        </Stack.Navigator>
+      </NavigationContainer>
+    </NavigationIndependentTree>
+  );
+};
+
+export default CountersScreen;
+
+function CounterListComponent() {
   const [counters, setCounters] = useState<ICounter[]>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -29,16 +65,16 @@ const CountersScreen = () => {
   }, []);
 
   const navigation = useNavigation<any>();
-  const redirect = useCallback((counterID: string) => {
+  const redirect = useCallback((counterId: string, counterName: string) => {
     navigation.navigate("Counter", {
-      counterID,
+      counterId,
+      counterName,
     });
   }, []);
 
   if (isLoading) {
     return <LoadingComponent />;
   }
-
   return (
     <View>
       <Text h2 style={styles.heading}>
@@ -50,7 +86,7 @@ const CountersScreen = () => {
           <ListItem
             key={index}
             bottomDivider
-            onPress={() => redirect(counter._id)}
+            onPress={() => redirect(counter._id, counter.counterName)}
           >
             <ListItem.Content>
               <ListItem.Title>{counter.counterName}</ListItem.Title>
@@ -61,6 +97,4 @@ const CountersScreen = () => {
       </View>
     </View>
   );
-};
-
-export default CountersScreen;
+}
