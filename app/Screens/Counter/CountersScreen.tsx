@@ -16,7 +16,11 @@ import Counter from "./CounterScreen";
 
 const Stack = createNativeStackNavigator<CountersScreensParamList>();
 
-const CountersScreen = () => {
+/**
+ *
+ * @returns The Navigation Stack for the Counters Screen
+ */
+function CountersScreen() {
   return (
     <NavigationIndependentTree>
       <NavigationContainer>
@@ -39,7 +43,7 @@ const CountersScreen = () => {
       </NavigationContainer>
     </NavigationIndependentTree>
   );
-};
+}
 
 export default CountersScreen;
 
@@ -65,6 +69,8 @@ function CounterListComponent() {
   }, []);
 
   const navigation = useNavigation<any>();
+
+  // redirects to the counter screen
   const redirect = useCallback((counterId: string, counterName: string) => {
     navigation.navigate("Counter", {
       counterId,

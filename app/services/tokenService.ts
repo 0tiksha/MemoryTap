@@ -20,8 +20,12 @@ export const storeToken = async (token: string): Promise<boolean> => {
  * @async
  * @returns Token
  */
-export const getTokenFromStorage = async (): Promise<string> => {
-  return await getData(tokenStorageKey);
+export const getTokenFromStorage = async (): Promise<string | null> => {
+  let data = await getData(tokenStorageKey);
+  if (data) {
+    data = data.slice(1, -1);
+  }
+  return data;
 };
 
 /**
@@ -37,8 +41,8 @@ export const clearTokenFromStorage = async () => {
  * @returns
  */
 export const decodeToken = async (): Promise<JwtPayload> => {
-  const token: string = await getTokenFromStorage();
-  const decoded: JwtPayload = jwtDecode(token);
+  const token: string | null = await getTokenFromStorage();
+  const decoded: JwtPayload = token ? jwtDecode(token) : {};
 
   return decoded;
 };

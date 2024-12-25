@@ -26,7 +26,7 @@ export const storeData = async ({ data, key }: Props) => {
 export const getData = async (key: string) => {
   try {
     const data = await AsyncStorage.getItem(key);
-    return data != null ? JSON.parse(data) : null;
+    return data;
   } catch (error) {
     console.error(error);
     return null;

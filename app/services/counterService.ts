@@ -23,7 +23,7 @@ export async function createNewCounter(
 
   let json = await res.json();
 
-  let response = new ResponseModel(json.message, json.error, json.data);
+  let response = new ResponseModel(json);
 
   if (!res.ok) {
     response.isError = true;
@@ -33,7 +33,7 @@ export async function createNewCounter(
 }
 
 /**
- *
+ * Gets all the counter for the user.
  * @returns Counter[]
  */
 export async function getCounterForUsers(): Promise<IResponse> {
@@ -44,7 +44,7 @@ export async function getCounterForUsers(): Promise<IResponse> {
 
   let json = await res.json();
 
-  let response = new ResponseModel(json.message, json.error, json.data);
+  let response = new ResponseModel(json);
 
   if (!res.ok) {
     response.isError = true;

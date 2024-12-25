@@ -6,6 +6,8 @@ type OfflineLogType = {
   DateTimeStamp: Date;
   CurrentValue: number;
   OperationType: "add" | "subtract";
+  CounterID: string;
+  OwnerID: string;
 };
 
 export default OfflineLogType;
