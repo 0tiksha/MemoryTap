@@ -1,15 +1,16 @@
-import { OperationType } from "./index";
+import ILog from "./ILog";
 
 /**
  * The Log that is made each time the user clicks a button
  */
-type LogType = {
-  LogID: number;
-  CounterID?: number;
-  DateTimeStamp: Date;
-  NewValue: number;
-  PreviousValue: number;
-  OperationType?: OperationType;
-};
+interface ILogType extends ILog {
+  counter: string;
+  newValue: number;
+  previousValue: number;
+  operationType: string;
+  createdAt: Date;
+  updatedAt: Date;
+  _id: string;
+}
 
-export default LogType;
+export default ILogType;

@@ -1,94 +1,121 @@
 import CounterButton from "@/app/Components/CounterButton";
 import { styles } from "@/app/indexStyle";
-import { OfflineLogType } from "@/app/models";
+import { LogType, OfflineLogType } from "@/app/models";
 import { LogService } from "@/app/services/logsService";
 import { ILogService } from "@/app/types/interfaces/ILogService";
-import { RouteProp } from "@react-navigation/native";
+import NetInfo from "@react-native-community/netinfo";
+import { Button } from "@rneui/base";
 import { Text } from "@rneui/themed";
 import { useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Alert, View } from "react-native";
-import { CountersScreensParamList } from "./CountersScreensParamList";
+import { CounterScreenProps } from "./CounterScreenProps";
+import LoadingComponent from "@/app/Components/LoadingComponent";
 
-type CounterScreenProps = {
-  route: RouteProp<CountersScreensParamList, "Counter">;
-};
-
+/**
+ * The Counter Component, renders the counter screen.
+ * @param param0
+ * @returns
+ */
 const Counter: React.FC<CounterScreenProps> = ({ route }) => {
   const counterID = route.params.counterId;
   const counterName = route.params.counterName;
 
-  const [count, setCounter] = useState<number>(0);
+  const [count, setCount] = useState<number>(0);
   const [data, setData] = useState<OfflineLogType | null>();
-  const [logs, setLogs] = useState<any>();
+  const [log, setLog] = useState<any>();
 
   const navigation = useNavigation();
 
+  const { isConnected } = NetInfo.useNetInfo();
+
   let _logService: ILogService = new LogService();
+
+  /**
+   * @sumary Syncs the logs made for counter to the server.
+   */
+  async function handleSync() {
+    // If offline
+    if (!isConnected) {
+      Alert.alert(
+        "Error",
+        "You are offline, please connect to the internet to perform sync.",
+        [
+          {
+            style: "destructive",
+            text: "Ok",
+          },
+        ],
+        {
+          cancelable: true,
+        }
+      );
+
+      return;
+    }
+    const result = await _logService.syncLogsToServer(counterID);
+    if (result.isError) {
+      Alert.alert("Error", result.error, [
+        { style: "destructive", text: "Ok" },
+      ]);
+    } else {
+      _logService.updateSyncedLogStatus(counterID);
+      Alert.alert("Success", "Logs synced successfully");
+    }
+  }
 
   // set the title name
   useEffect(() => {
     navigation.setOptions({
       headerTitle: counterName,
+      headerRight: () => {
+        <Button onPress={handleSync}>Sync Logs for this counter</Button>;
+      },
     });
-  }, []);
+  }, [navigation]);
 
-  // gets the data from the storage only when offline
   useEffect(() => {
     _logService
-      .getLogsForCounterFromLocalStorage(route.params.counterId)
-      .then((storedData) => {
-        if (storedData != null) {
-          setData(storedData[storedData.length - 1]);
-
-          let lastLog = storedData.at(storedData.length - 1);
-          if (lastLog?.OperationType === "add")
-            setCounter(lastLog.CurrentValue + 1);
-          if (lastLog?.OperationType === "subtract")
-            setCounter(lastLog.CurrentValue - 1);
-        } else {
-          setData(null);
-        }
-      });
-  }, []);
-
-  // get the logs for the counter
-  useEffect(() => {
-    _logService
-      .getLogsForCounter(route.params.counterId)
+      .resolveLatestLog(
+        route.params.counterId,
+        isConnected ? isConnected : false
+      )
       .then((res) => {
-        setLogs(res.data);
-        if (res.isError) {
+        if (res == null) {
           Alert.alert(
             "Error",
-            res.error,
-            [{ style: "destructive", text: "Ok" }],
+            "Error getting the latest log",
+            [
+              {
+                style: "destructive",
+                text: "Ok",
+              },
+            ],
             {
               cancelable: true,
-              userInterfaceStyle: "dark",
             }
           );
+          return;
         }
-      })
-      .catch((error) => {
-        Alert.alert(
-          "Unhandled Error",
-          error.message,
-          [{ style: "destructive", text: "Ok" }],
-          {
-            cancelable: true,
-            userInterfaceStyle: "dark",
-          }
-        );
+        console.log(res);
+
+        // the log is of type OfflineLogType
+        if ("Synced" in res) {
+          setCount(res.CurrentValue + (res.OperationType === "add" ? 1 : -1));
+          setLog(res);
+        } else {
+          setCount(res.newValue);
+          setLog(res);
+        }
       });
-  }, []);
+  }, [route.params.counterId, isConnected]);
 
   /**
    * @summary Adds a new log to the local storage when a button is clicked.
    * @param operation add or subtract
    */
   const onClick = async (operation: "add" | "subtract") => {
-    await AddLocalLog(count, operation, setCounter, counterID);
+    await AddLocalLog(count, operation, setCount, counterID);
   };
 
   async function AddLocalLog(
@@ -104,6 +131,7 @@ const Counter: React.FC<CounterScreenProps> = ({ route }) => {
       OperationType: operation,
       OwnerID: "",
       CounterID: counterID,
+      Synced: false,
     };
 
     // Store the data to storage
@@ -114,17 +142,28 @@ const Counter: React.FC<CounterScreenProps> = ({ route }) => {
     else setCounter((prev) => prev - 1);
   }
 
+  if (isConnected == null) {
+    return <LoadingComponent />;
+  }
+
   return (
-    <View style={styles.container}>
-      <View style={styles.btnContainer}>
-        <CounterButton label="add" onClick={() => onClick("add")} />
+    <View>
+      {isConnected ? (
+        <Button style={styles.syncBtn} onPress={handleSync}>
+          Sync Logs
+        </Button>
+      ) : null}
+      <View style={styles.container}>
+        <View style={styles.btnContainer}>
+          <CounterButton label="add" onClick={() => onClick("add")} />
 
-        <View style={styles.countContainer}>
-          <Text>Count:</Text>
-          <Text style={{ fontSize: 50 }}>{count}</Text>
+          <View style={styles.countContainer}>
+            <Text>Count:</Text>
+            <Text style={{ fontSize: 50 }}>{count}</Text>
+          </View>
+
+          <CounterButton label="remove" onClick={() => onClick("subtract")} />
         </View>
-
-        <CounterButton label="remove" onClick={() => onClick("subtract")} />
       </View>
     </View>
   );

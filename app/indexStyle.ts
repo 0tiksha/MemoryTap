@@ -22,4 +22,8 @@ export const styles = StyleSheet.create({
   countContainer: {
     alignItems: "center",
   },
+  syncBtn: {
+    marginTop: 20,
+    alignSelf: "center",
+  },
 });

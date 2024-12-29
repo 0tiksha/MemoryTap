@@ -15,7 +15,7 @@ class ResponseModel implements IResponse {
 
   constructor(jsonData: Params) {
     this.message = jsonData.message;
-    this.error = jsonData.data.rror;
+    this.error = jsonData.data.error;
     this.data = jsonData.data;
     this.isError = jsonData.isError;
   }

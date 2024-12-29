@@ -1,18 +1,21 @@
 import LoadingComponent from "@/app/Components/LoadingComponent";
 import { getCounterForUsers } from "@/app/services/counterService";
+import { LogService } from "@/app/services/logsService";
 import ICounter from "@/app/types/interfaces/ICounter";
+import { ILogService } from "@/app/types/interfaces/ILogService";
 import {
   NavigationContainer,
   NavigationIndependentTree,
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { Button } from "@rneui/base";
 import { ListItem, Text } from "@rneui/themed";
 import { useNavigation } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { Alert, View } from "react-native";
+import Counter from "./CounterScreen";
 import { CountersScreensParamList } from "./CountersScreensParamList";
 import styles from "./styles";
-import Counter from "./CounterScreen";
 
 const Stack = createNativeStackNavigator<CountersScreensParamList>();
 

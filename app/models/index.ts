@@ -1,6 +1,11 @@
-import LogType from "./LogType";
+import ILogType from "./LogType";
 import OperationType from "./OperationType";
 import CounterType from "./CounterType";
-import OfflineLogType from "./OfflineLogType";
+import IOfflineLogType from "./OfflineLogType";
 
-export { LogType, OperationType, CounterType, OfflineLogType };
+export {
+  ILogType as LogType,
+  OperationType,
+  CounterType,
+  IOfflineLogType as OfflineLogType,
+};
