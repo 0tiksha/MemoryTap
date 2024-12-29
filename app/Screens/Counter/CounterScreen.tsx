@@ -97,7 +97,6 @@ const Counter: React.FC<CounterScreenProps> = ({ route }) => {
           );
           return;
         }
-        console.log(res);
 
         // the log is of type OfflineLogType
         if ("Synced" in res) {
