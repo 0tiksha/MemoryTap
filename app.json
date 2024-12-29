@@ -8,10 +8,25 @@
     "userInterfaceStyle": "automatic",
     "entryPoint": "./app/index.js",
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "android": {
+      "package": "com.anonymous.MemoryTap"
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "95feee56-ae57-4060-8948-072c0c5722ce"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.anonymous.MemoryTap"
     }
   }
 }

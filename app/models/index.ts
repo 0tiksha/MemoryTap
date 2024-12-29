@@ -1,7 +1,11 @@
-import { BaseEntity } from "./BaseEntity";
-import { LogType } from "./LogType";
-import { OperationType } from "./OperationType";
-import { CounterType } from "./CounterType";
-import { User } from "./User";
+import ILogType from "./LogType";
+import OperationType from "./OperationType";
+import CounterType from "./CounterType";
+import IOfflineLogType from "./OfflineLogType";
 
-export { BaseEntity, LogType, OperationType, CounterType, User };
+export {
+  ILogType as LogType,
+  OperationType,
+  CounterType,
+  IOfflineLogType as OfflineLogType,
+};

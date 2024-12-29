@@ -1,23 +1,16 @@
-import { BaseEntity, OperationType } from "./index";
+import ILog from "./ILog";
 
 /**
  * The Log that is made each time the user clicks a button
- * @extends BaseEntity
  */
-export type LogType = BaseEntity & {
-  LogID: number;
-  CounterID?: number;
-  DateTimeStamp: Date;
-  CurrentValue: number;
-  OperationType?: OperationType;
-};
+interface ILogType extends ILog {
+  counter: string;
+  newValue: number;
+  previousValue: number;
+  operationType: string;
+  createdAt: Date;
+  updatedAt: Date;
+  _id: string;
+}
 
-/**
- * For Offline mode only
- */
-export type OfflineLogType = {
-  LogCount: number;
-  DateTimeStamp: Date;
-  CurrentValue: number;
-  OperationType: "add" | "subtract";
-};
+export default ILogType;
